@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokaz Fajerwerków — Lab 03</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+        }
+
+        canvas {
+            display: block;
+            cursor: crosshair;
+        }
+
+        /* ── Panel sterowania ── */
+        #controls {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: rgba(10, 10, 30, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 18px 22px;
+            width: 280px;
+            z-index: 10;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        #controls h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .control-group label span {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .toggle-group label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 20px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle .slider {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.25s;
+        }
+
+        .toggle .slider::before {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.25s;
+        }
+
+        .toggle input:checked + .slider {
+            background: rgba(100, 180, 255, 0.5);
+        }
+
+        .toggle input:checked + .slider::before {
+            transform: translateX(20px);
+        }
+
+        #fps-counter {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: monospace;
+            z-index: 10;
+        }
+
+        #hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div id="fps-counter">FPS: --</div>
+
+<div id="hint">Kliknij, aby odpalić fajerwerk</div>
+
+<div id="controls">
+    <h2>Panel sterowania</h2>
+
+    <div class="control-group">
+        <label for="slider-gravity">Grawitacja <span id="val-gravity">0.06</span></label>
+        <input type="range" id="slider-gravity" min="0.01" max="0.20" step="0.01" value="0.06">
+    </div>
+
+    <div class="control-group">
+        <label for="slider-particles">Liczba cząsteczek <span id="val-particles">120</span></label>
+        <input type="range" id="slider-particles" min="20" max="400" step="10" value="120">
+    </div>
+
+    <div class="control-group">
+        <label for="slider-speed">Prędkość rakiety <span id="val-speed">8</span></label>
+        <input type="range" id="slider-speed" min="3" max="16" step="1" value="8">
+    </div>
+
+    <div class="control-group">
+        <label for="slider-decay">Szybkość zanikania <span id="val-decay">0.015</span></label>
+        <input type="range" id="slider-decay" min="0.005" max="0.040" step="0.001" value="0.015">
+    </div>
+
+    <div class="toggle-group">
+        <label for="toggle-auto">Automatyczny pokaz</label>
+        <label class="toggle">
+            <input type="checkbox" id="toggle-auto" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="toggle-group">
+        <label for="toggle-trails">Efekt Trails</label>
+        <label class="toggle">
+            <input type="checkbox" id="toggle-trails" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="toggle-group">
+        <label for="toggle-blend">Addytywne światło</label>
+        <label class="toggle">
+            <input type="checkbox" id="toggle-blend" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
