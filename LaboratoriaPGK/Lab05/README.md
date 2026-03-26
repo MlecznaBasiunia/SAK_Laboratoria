@@ -66,4 +66,4 @@ W `ship.py` zmień `DEBUG = True` aby wyświetlić wektor prędkości (linia z c
 
 ## Uwagi
 
-Kod korzysta z niskopoziomowego API raylib (`from raylib import ffi, rl, colors`) z PascalCase (`rl.InitWindow`, `rl.IsKeyDown`), ponieważ wrapper `pyray` (snake_case) nie generuje się poprawnie w wersji 5.5.x na Pythonie 3.13.
+Kod korzysta z niskopoziomowego API raylib (`from raylib import ffi, rl, colors`) z PascalCase (`rl.InitWindow`, `rl.IsKeyDown`), ponieważ wrapper `pyray` (snake_case) nie generuje się poprawnie w wersji 5.5.x na Pythonie 3.13 (problemy z pycharmem i jego aktualizacje w trakcie labów co było widać).
