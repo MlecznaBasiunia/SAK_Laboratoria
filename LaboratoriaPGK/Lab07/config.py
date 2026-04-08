@@ -1,0 +1,40 @@
+SCREEN_W = 800
+SCREEN_H = 600
+
+THRUST = 300.0
+FRICTION = 80.0
+ROT_SPEED = 4.0
+MAX_SPEED = 350.0
+BRAKE_FORCE = 600.0
+
+SHIP_VERTS = [(0, -18), (-12, 12), (12, 12)]
+SHIP_SIZE = 18
+SHIP_RADIUS = 14
+
+FLAME_VERTS = [(-7, 12), (0, 28), (7, 12)]
+
+ASTEROID_SIZES = {
+    "large":  (45, 30, 70, 11),
+    "medium": (25, 50, 120, 9),
+    "small":  (12, 80, 180, 7),
+}
+ASTEROID_JITTER = 0.4
+ASTEROID_ROT_MIN = 0.3
+ASTEROID_ROT_MAX = 1.5
+ASTEROID_COUNT = 8
+
+BULLET_SPEED = 600.0
+BULLET_TTL = 1.2
+BULLET_RADIUS = 2
+BULLET_LIMIT = 5
+
+EXPLOSION_DURATION = 0.4
+EXPLOSION_SCALE = 1.8
+
+STARS_COUNT = 120
+
+SOUND_SHOOT = "assets/shoot.wav"
+SOUND_EXPLODE = "assets/explode.wav"
+TEXTURE_STARS = "assets/stars.png"
+
+DEBUG = False
