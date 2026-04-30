@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://cfqc7tl2uo7qp"]
+
+[ext_resource type="Script" uid="uid://npdrhx0cqqkw" path="res://rail_follower.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://btud7uo1qkq35" path="res://ship_controller.gd" id="2_0xm2m"]
+
+[sub_resource type="Curve3D" id="Curve3D_7dm0k"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -20, 0, 0, 5, 0, 0, -5, 10, 0, -40, 0, 0, 5, 0, 0, -5, 10, 0, -60),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="BoxMesh" id="BoxMesh_7dm0k"]
+size = Vector3(1.5, 0.3, 2)
+
+[node name="Node3D" type="Node3D" unique_id=1143975656]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=412128008]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
+
+[node name="RailPath (Path3D)" type="Path3D" parent="." unique_id=489832041]
+curve = SubResource("Curve3D_7dm0k")
+
+[node name="RailFollower (PathFollow3D)" type="PathFollow3D" parent="RailPath (Path3D)" unique_id=1064842735]
+script = ExtResource("1_ig7tw")
+
+[node name="Ship (Node3D)" type="Node3D" parent="RailPath (Path3D)/RailFollower (PathFollow3D)" unique_id=1641812194]
+script = ExtResource("2_0xm2m")
+
+[node name="ShipMesh (MeshInstance3D)" type="MeshInstance3D" parent="RailPath (Path3D)/RailFollower (PathFollow3D)/Ship (Node3D)" unique_id=1781464109]
+mesh = SubResource("BoxMesh_7dm0k")
+
+[node name="Camera3D" type="Camera3D" parent="RailPath (Path3D)/RailFollower (PathFollow3D)" unique_id=304431779]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, 0, 3, 8)
