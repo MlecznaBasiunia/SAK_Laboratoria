@@ -1,0 +1,61 @@
+{
+  "graphics": {
+    "fullscreen": true,
+    "borderless": false,
+    "vsync": false,
+    "show_fps": true,
+    "fps_idx": 1,
+    "res_idx": 7,
+    "border_particles": true,
+    "speed_smear": true,
+    "asteroid_speed_color": true,
+    "bloom": true
+  },
+  "audio": {
+    "sfx": true,
+    "music": true
+  },
+  "controls": {
+    "kb_p1": {
+      "thrust": 265,
+      "brake": 264,
+      "left": 263,
+      "right": 262,
+      "shoot": 32,
+      "alt_brake": 90,
+      "alt1": 88,
+      "alt2": 67,
+      "strafe_l": 65,
+      "strafe_r": 68
+    },
+    "kb_p2": {
+      "left": 65,
+      "right": 68,
+      "thrust": 87,
+      "brake": 83,
+      "shoot": 74,
+      "alt_brake": 72,
+      "alt1": 75,
+      "alt2": 76,
+      "strafe_l": 81,
+      "strafe_r": 69
+    },
+    "gamepad": {
+      "left": -1,
+      "right": -1,
+      "thrust": 1,
+      "brake": 14,
+      "shoot": -2,
+      "alt_brake": 2,
+      "alt1": 3,
+      "alt2": 4,
+      "strafe_l": 5,
+      "strafe_r": 6
+    }
+  },
+  "language": "pl",
+  "ship": {
+    "color_idx": 0,
+    "skin_idx": 3
+  }
+}
