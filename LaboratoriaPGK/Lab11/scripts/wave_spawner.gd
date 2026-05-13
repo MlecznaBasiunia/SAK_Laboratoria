@@ -37,9 +37,11 @@ func _spawn_wave(index: int) -> void:
 	var wave = _waves[index]
 	for j in wave["count"]:
 		var enemy = ENEMY_SCENE.instantiate()
-		get_tree().root.add_child(enemy)
 		var x: float = wave["x_positions"][j] if j < wave["x_positions"].size() else 0.0
-		enemy.global_position = _path_follow.global_position + Vector3(x, 0.0, wave["z_offset"])
+		# Ustaw pozycję PRZED add_child – inaczej _ready() widzi position=(0,0,0)
+		# i wszystkie tweeny sway zaczynają się od x=0, ściągając wrogów w jedno miejsce
+		enemy.position = _path_follow.global_position + Vector3(x, 0.0, wave["z_offset"])
+		get_tree().root.add_child(enemy)
 		enemy.died.connect(_on_enemy_died)
 		_enemy_count += 1
 	_update_hud()

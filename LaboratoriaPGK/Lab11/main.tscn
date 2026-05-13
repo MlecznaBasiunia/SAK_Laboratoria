@@ -5,14 +5,14 @@
 [ext_resource type="Script" uid="uid://yf8dbiw1d3gi" path="res://scripts/wave_spawner.gd" id="3_spawner"]
 [ext_resource type="Script" uid="uid://b7m58lyp241sc" path="res://scripts/camera_follow.gd" id="4_camera"]
 [ext_resource type="PackedScene" uid="uid://bullet001" path="res://bullet.tscn" id="5_bullet"]
+[ext_resource type="Shader" path="res://shaders/sky.gdshader" id="6_skyshader"]
+[ext_resource type="Shader" path="res://shaders/wall.gdshader" id="7_wallshader"]
 
-[sub_resource type="ProceduralSkyMaterial" id="SkyMat_1"]
-sky_top_color = Color(0.02, 0.02, 0.08, 1)
-sky_horizon_color = Color(0.05, 0.02, 0.12, 1)
-sky_curve = 0.25
-ground_bottom_color = Color(0.01, 0.01, 0.03, 1)
-ground_horizon_color = Color(0.05, 0.02, 0.1, 1)
-energy_multiplier = 0.3
+[sub_resource type="ShaderMaterial" id="SkyMat_1"]
+shader = ExtResource("6_skyshader")
+
+[sub_resource type="ShaderMaterial" id="WallMat_1"]
+shader = ExtResource("7_wallshader")
 
 [sub_resource type="Sky" id="Sky_1"]
 sky_material = SubResource("SkyMat_1")
@@ -69,7 +69,15 @@ size = Vector3(1, 8, 80)
 environment = SubResource("Env_1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1252429415]
-transform = Transform3D(1, 0, 0, 0, 0.9299773, 0.36761695, 0, -0.36761698, 0.9299773, 0, 10.235683, 1.173006)
+transform = Transform3D(1, 0, 0, 0, 0.9299773, 0.36761695, 0, -0.36761698, 0.9299773, 0.030685425, 3.7123573, -0.876835)
+shadow_enabled = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D" unique_id=1515665986]
+transform = Transform3D(0.972043, 0.16054663, -0.17133936, -0.08631748, 0.92295015, 0.3751167, 0.21836133, -0.34983978, 0.91100526, 0.030685425, 3.712358, -0.87683505)
+shadow_enabled = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D" unique_id=1369416489]
+transform = Transform3D(0.8953468, -0.40267158, 0.19028896, 0.30452195, 0.86528087, 0.3981904, -0.3249933, -0.2985713, 0.89734864, 0.030685425, 3.7123585, -0.8768351)
 shadow_enabled = true
 
 [node name="Path3D" type="Path3D" parent="." unique_id=777428679]
@@ -111,6 +119,7 @@ collision_mask = 0
 
 [node name="WallMesh" type="MeshInstance3D" parent="WallLeft" unique_id=996827466]
 mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("WallMat_1")
 
 [node name="WallCollision" type="CollisionShape3D" parent="WallLeft" unique_id=108981174]
 shape = SubResource("BoxShape3D_wall")
@@ -122,19 +131,21 @@ collision_mask = 0
 
 [node name="WallMesh" type="MeshInstance3D" parent="WallRight" unique_id=948279347]
 mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("WallMat_1")
 
 [node name="WallCollision" type="CollisionShape3D" parent="WallRight" unique_id=2082088382]
 shape = SubResource("BoxShape3D_wall")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=830823949]
 
-[node name="HUDLabel" type="Label" parent="CanvasLayer"]
+[node name="HUDLabel" type="Label" parent="CanvasLayer" unique_id=851522399]
 offset_left = 15.0
 offset_top = 15.0
 offset_right = 320.0
 offset_bottom = 80.0
-text = "Fala: 0 / 3\nWrogowie: 0"
 theme_override_colors/font_color = Color(1, 1, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 22
+text = "Fala: 0 / 3
+Wrogowie: 0"
