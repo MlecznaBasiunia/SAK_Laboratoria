@@ -1,0 +1,140 @@
+[gd_scene format=3 uid="uid://main001"]
+
+[ext_resource type="Script" uid="uid://dwpdcx7k415rg" path="res://scripts/rail_follow.gd" id="1_railfollow"]
+[ext_resource type="Script" uid="uid://0u3wcv6m3fl1" path="res://scripts/ship.gd" id="2_ship"]
+[ext_resource type="Script" uid="uid://yf8dbiw1d3gi" path="res://scripts/wave_spawner.gd" id="3_spawner"]
+[ext_resource type="Script" uid="uid://b7m58lyp241sc" path="res://scripts/camera_follow.gd" id="4_camera"]
+[ext_resource type="PackedScene" uid="uid://bullet001" path="res://bullet.tscn" id="5_bullet"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat_1"]
+sky_top_color = Color(0.02, 0.02, 0.08, 1)
+sky_horizon_color = Color(0.05, 0.02, 0.12, 1)
+sky_curve = 0.25
+ground_bottom_color = Color(0.01, 0.01, 0.03, 1)
+ground_horizon_color = Color(0.05, 0.02, 0.1, 1)
+energy_multiplier = 0.3
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("SkyMat_1")
+
+[sub_resource type="Environment" id="Env_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+ambient_light_source = 3
+ambient_light_energy = 0.5
+
+[sub_resource type="Curve3D" id="Curve3D_1"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, -16, 0, 0, 0, 0, 0, 8, 0, 0, -8, 0, 0, -25, 0, 0, 8, 0, 0, -8, 0, 0, -50, 0, 0, 8, 0, 0, 0, 0, 0, -75),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="BoxMesh" id="BoxMesh_ship"]
+size = Vector3(1, 0.5, 1.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ship"]
+size = Vector3(1, 0.5, 1.5)
+
+[sub_resource type="Animation" id="Animation_barrel"]
+resource_name = "barrel_roll"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ShipMesh:rotation:z")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.283185]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimLib_1"]
+_data = {
+&"barrel_roll": SubResource("Animation_barrel")
+}
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(1, 8, 80)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(1, 8, 80)
+
+[node name="Main" type="Node3D" unique_id=35795016]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=486741304]
+environment = SubResource("Env_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1252429415]
+transform = Transform3D(1, 0, 0, 0, 0.9299773, 0.36761695, 0, -0.36761698, 0.9299773, 0, 10.235683, 1.173006)
+shadow_enabled = true
+
+[node name="Path3D" type="Path3D" parent="." unique_id=777428679]
+curve = SubResource("Curve3D_1")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D" unique_id=743919643]
+script = ExtResource("1_railfollow")
+
+[node name="Ship" type="Node3D" parent="Path3D/PathFollow3D" unique_id=78611552]
+script = ExtResource("2_ship")
+bullet_scene = ExtResource("5_bullet")
+
+[node name="ShipMesh" type="MeshInstance3D" parent="Path3D/PathFollow3D/Ship" unique_id=1051396980]
+mesh = SubResource("BoxMesh_ship")
+
+[node name="Area3D" type="Area3D" parent="Path3D/PathFollow3D/Ship" unique_id=1723966150]
+collision_mask = 26
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/Ship/Area3D" unique_id=1459740318]
+shape = SubResource("BoxShape3D_ship")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Path3D/PathFollow3D/Ship" unique_id=435046093]
+libraries/ = SubResource("AnimLib_1")
+
+[node name="CameraTarget" type="Node3D" parent="Path3D/PathFollow3D" unique_id=911263194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=720326851]
+transform = Transform3D(1, 0, 0, 0, 0.9964067, 0.0846982, 0, -0.0846982, 0.9964067, 0, -0.21692336, 5)
+script = ExtResource("4_camera")
+
+[node name="WaveSpawner" type="Node" parent="." unique_id=657065509]
+script = ExtResource("3_spawner")
+
+[node name="WallLeft" type="StaticBody3D" parent="." unique_id=1860806174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0, -40)
+collision_layer = 16
+collision_mask = 0
+
+[node name="WallMesh" type="MeshInstance3D" parent="WallLeft" unique_id=996827466]
+mesh = SubResource("BoxMesh_wall")
+
+[node name="WallCollision" type="CollisionShape3D" parent="WallLeft" unique_id=108981174]
+shape = SubResource("BoxShape3D_wall")
+
+[node name="WallRight" type="StaticBody3D" parent="." unique_id=1291989902]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, -40)
+collision_layer = 16
+collision_mask = 0
+
+[node name="WallMesh" type="MeshInstance3D" parent="WallRight" unique_id=948279347]
+mesh = SubResource("BoxMesh_wall")
+
+[node name="WallCollision" type="CollisionShape3D" parent="WallRight" unique_id=2082088382]
+shape = SubResource("BoxShape3D_wall")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUDLabel" type="Label" parent="CanvasLayer"]
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 320.0
+offset_bottom = 80.0
+text = "Fala: 0 / 3\nWrogowie: 0"
+theme_override_colors/font_color = Color(1, 1, 0.2, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
