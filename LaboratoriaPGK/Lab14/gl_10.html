@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gry_lab_10</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .markdown-body {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        .markdown-body h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h3 { font-size: 1.25em; }
+        .markdown-body h4 { font-size: 1em; }
+        .markdown-body h5 { font-size: 0.875em; }
+        .markdown-body h6 {
+            font-size: 0.85em;
+            color: #656d76;
+        }
+        .markdown-body p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        .markdown-body ul,
+        .markdown-body ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        .markdown-body li { margin-top: 0.25em; }
+        .markdown-body li + li { margin-top: 0.25em; }
+        .markdown-body code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+        .markdown-body pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body pre code {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            background-color: transparent;
+            border: 0;
+        }
+        .markdown-body blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #656d76;
+            border-left: 0.25em solid #d0d7de;
+        }
+        .markdown-body table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-top: 0;
+            margin-bottom: 16px;
+            width: 100%;
+            overflow: auto;
+        }
+        .markdown-body table th,
+        .markdown-body table td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+        .markdown-body table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        .markdown-body table tr {
+            background-color: #ffffff;
+            border-top: 1px solid #d0d7de;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        .markdown-body img {
+            max-width: 100%;
+            box-sizing: content-box;
+            background-color: #ffffff;
+        }
+        .markdown-body hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #d0d7de;
+            border: 0;
+        }
+        .markdown-body strong { font-weight: 600; }
+        .markdown-body em { font-style: italic; }
+    </style>
+    
+</head>
+<body>
+    <div class="markdown-body">
+<h1>Laboratorium 10: Strzelanie i Kolizje 3D</h1>
+<p><strong>Przedmiot:</strong> Tworzenie Gier Komputerowych</p>
+<p><strong>Technologia:</strong> Godot Engine 4.x (GDScript)</p>
+<p><strong>Czas trwania:</strong> 2h 15min</p>
+<hr>
+<h2>1. Cel i Temat Zajęć</h2>
+<p><strong>Blok III: 3D i Systemy. Projekt: Star Fox (klon 3D).</strong></p>
+<p>Dodajemy strzelanie i detekcję trafień. Pocisk to osobna scena <code>.tscn</code>, tworzona wielokrotnie w trakcie gry. Detekcja kolizji opiera się na sygnałach — węzeł sam informuje o zderzeniu, bez ręcznego sprawdzania każdej klatki.</p>
+<p><strong>Cele:</strong></p>
+<ul>
+<li>Scena jako wielokrotnego użytku zasób: <code>PackedScene</code>, <code>preload</code>, <code>instantiate</code>.</li>
+<li><code>Area3D</code> + <code>CollisionShape3D</code> jako hitboxy; różnica między <code>Area3D</code> a <code>StaticBody3D</code>.</li>
+<li>Sygnał <code>area_entered</code> i podłączanie sygnałów w kodzie.</li>
+<li>Cykl życia pocisku: instancja → ruch → <code>queue_free()</code> po czasie życia lub trafieniu.</li>
+<li>Statyczny cel jako pierwszy obiekt do zestrzelenia.</li>
+</ul>
+<p><strong>Wymagania wstępne:</strong> ukończony Lab 09. W projekcie z Lab 09 działa scena z <code>PathFollow3D</code>, sterowanie statkiem w XY i automatyczny postęp szyny.</p>
+<hr>
+<h2>2. Część Wstępna (ok. 15 min)</h2>
+<ol>
+<li><strong>Scena jako zasób.</strong> W Raylib pocisk był obiektem klasy Pythona. W Godot pocisk to plik <code>.tscn</code>. Co zyskujesz, tworząc scenę zamiast klasy? Co można zmienić w scenie pocisku bez dotykania kodu gracza?</li>
+<li><strong><code>Area3D</code> kontra <code>StaticBody3D</code> kontra <code>RigidBody3D</code>.</strong> Trzy typy obiektów kolizyjnych w Godot. Który wykrywa wejście w obszar, ale <em>nie zatrzymuje</em> ruchu? Który blokuje inne ciała? Do czego służy trzeci?</li>
+<li><strong>Warstwy i maski kolizji.</strong> Czy pocisk gracza powinien zderzać się z innym pociskiem gracza? Jak powiedzieć silnikowi Godot, żeby sprawdzał kolizje tylko między wybranymi grupami obiektów?</li>
+</ol>
+<hr>
+<h2>3. Materiały źródłowe</h2>
+<ul>
+<li><strong>Area3D:</strong> https://docs.godotengine.org/en/stable/classes/class_area3d.html</li>
+<li><strong>CollisionShape3D:</strong> https://docs.godotengine.org/en/stable/classes/class_collisionshape3d.html</li>
+<li><strong>Sygnały w Godot 4:</strong> https://docs.godotengine.org/en/stable/getting_started/step_by_step/signals.html</li>
+<li><strong>Warstwy kolizji:</strong> https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html#collision-layers-and-masks</li>
+</ul>
+<p><strong>Punkt startowy:</strong> skopiuj <code>lab09/</code> jako <code>lab10/</code>. Pracuj w kopii.</p>
+<hr>
+<h2>4. Zadania laboratoryjne</h2>
+<hr>
+<h3>Zadanie 1: Scena pocisku</h3>
+<p>Utwórz scenę <code>bullet.tscn</code> w katalogu <code>lab10/</code>. Struktura węzłów:</p>
+<pre><code>Area3D  (korzeń, skrypt pocisku)
+├── MeshInstance3D  (mała kula lub walec — zastępczy model)
+└── CollisionShape3D  (SphereShape3D, promień ~0.2)</code></pre>
+<p>W skrypcie pocisku wyeksportuj prędkość i czas życia:</p>
+<pre><code>@export var speed: float = 30.0
+@export var lifetime: float = 3.0</code></pre>
+<p>W <code><em>process(delta)</code> przesuwaj pocisk do przodu (<code>position.z -= speed * delta</code>) i odliczaj <code>lifetime</code>. Po osiągnięciu zera wywołaj <code>queue</em>free()</code>.</p>
+<hr>
+<h3>Zadanie 2: Hitbox gracza i warstwy kolizji</h3>
+<p>Dodaj do węzła statku <code>Area3D</code> z <code>CollisionShape3D</code> o kształcie dopasowanym do zastępczego modelu.</p>
+<p>Ustaw warstwy kolizji w inspektorze (<code>CollisionObject3D > Collision</code>):</p>
+<table>
+<thead><tr>
+<th>Obiekt</th>
+<th>Layer</th>
+<th>Mask</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Gracz (Area3D)</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Pocisk gracza (Area3D)</td>
+<td>3</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<p>Wartość <code>Mask = 2</code> oznacza, że obiekt reaguje wyłącznie na warstwę 2 (wrogowie — przygotowanie pod kolejne zadania). Pocisk nie zderzy się ani ze statkiem, ani z innym pociskiem.</p>
+<hr>
+<h3>Zadanie 3: Strzelanie</h3>
+<p>W skrypcie statku dodaj eksport sceny pocisku oraz cooldown strzału (np. 0.3 s, żeby trzymanie klawisza nie spamowało setkami pocisków):</p>
+<pre><code>@export var bullet_scene: PackedScene
+var _shoot_cooldown: float = 0.0</code></pre>
+<p>W <code><em>process(delta)</code> odlicz cooldown i przy <code>Input.is</em>action<em>just</em>pressed("ui_accept")</code> (jeśli cooldown ≤ 0) zainstancjonuj pocisk:</p>
+<pre><code>var bullet = bullet_scene.instantiate()
+get_tree().root.add_child(bullet)
+bullet.global_position = global_position</code></pre>
+<p>W inspektorze przeciągnij <code>bullet.tscn</code> do właściwości <code>Bullet Scene</code>.</p>
+<p><strong>Pytanie do refleksji:</strong> dlaczego dodajemy pocisk do <code>root</code>, a nie jako dziecko <code>PathFollow3D</code>? Co by się stało w drugim wariancie?</p>
+<hr>
+<h3>Zadanie 4: Statyczny cel</h3>
+<p>Utwórz scenę <code>target.tscn</code>:</p>
+<pre><code>Node3D  (korzeń, skrypt celu)
+├── MeshInstance3D  (BoxMesh albo CylinderMesh)
+└── Area3D
+    └── CollisionShape3D</code></pre>
+<p><code>Area3D</code> celu na Layer 2 (zgodnie z tabelą z Zadania 2).</p>
+<p>W skrypcie podłącz sygnał trafienia w <code>_ready</code> (połączenie z kodu, nie z edytora — łatwiej debugować):</p>
+<pre><code>func _ready():
+    $Area3D.area_entered.connect(_on_hit)
+
+func _on_hit(_area: Area3D):
+    print(&quot;trafiony!&quot;)
+    queue_free()</code></pre>
+<p>Umieść w <code>main.tscn</code> kilka instancji celu w pozycjach przed kamerą (np. <code>z = -10</code>, <code>-20</code>, <code>-30</code>).</p>
+<hr>
+<h3>Zadanie 5: Weryfikacja i porządek</h3>
+<p>Uruchom scenę. Poleć do przodu, strzelaj, zestrzel wszystkie cele. Sprawdź:</p>
+<ul>
+<li>pociski znikają po upływie <code>lifetime</code> (zakładka <strong>Remote</strong> w debuggerze pokazuje brak węzłów <code>bullet</code>),</li>
+<li>trafienie celu powoduje jego usunięcie,</li>
+<li>w konsoli nie ma błędów <code>Invalid call</code> ani <code>Null instance</code>.</li>
+</ul>
+<p>Dodaj prostą zmienną <code>score</code> w skrypcie głównym, zwiększaną przy każdym trafieniu. Wyświetl wynik przez <code>print()</code> — pełny HUD pojawi się w Lab 13.</p>
+<p>Commit z opisem co działa.</p>
+<hr>
+<h2>5. System oceniania</h2>
+<p><strong>Sposób oddania:</strong> push do repozytorium (folder <code>lab10/</code>) + demo przy prowadzącym.</p>
+<ul>
+<li><strong>[3.0 pkt]</strong> Pocisk powstaje i jest widoczny w scenie po naciśnięciu klawisza. Cel stoi w scenie.</li>
+<li><strong>[4.0 pkt]</strong> Pocisk trafia cel i usuwa go (<code>queue_free()</code>). Pocisk znika po upływie czasu życia. Warstwy kolizji ustawione (pocisk nie zderza się z graczem).</li>
+<li><strong>[5.0 pkt]</strong> Wiele celów w scenie, wszystkie reagują na trafienie. Cooldown strzału działa. Wynik wypisywany w konsoli. Brak błędów w konsoli Godot.</li>
+</ul>
+<hr>
+<h2>6. Zadania dodatkowe (*)</h2>
+<h3>Zadanie *: Efekt trafienia</h3>
+<p>Zamiast natychmiast usuwać cel, przed <code>queue<em>free()</code> zmień kolor materiału <code>MeshInstance3D</code> na czerwony przez ułamek sekundy. Użyj <code>await get</em>tree().create_timer(0.1).timeout</code>.</p>
+<h3>Zadanie **: Ograniczenie liczby pocisków</h3>
+<p>Wprowadź limit aktywnych pocisków (np. maks. 5 jednocześnie). Trzymaj je w tablicy w skrypcie głównym. Gdy tablica jest pełna — strzał blokowany. Usuwaj wpis z tablicy, gdy pocisk znika.</p>
+    </div>
+</body>
+</html>

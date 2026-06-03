@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gry_lab_13</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .markdown-body {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        .markdown-body h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h3 { font-size: 1.25em; }
+        .markdown-body h4 { font-size: 1em; }
+        .markdown-body h5 { font-size: 0.875em; }
+        .markdown-body h6 {
+            font-size: 0.85em;
+            color: #656d76;
+        }
+        .markdown-body p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        .markdown-body ul,
+        .markdown-body ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        .markdown-body li { margin-top: 0.25em; }
+        .markdown-body li + li { margin-top: 0.25em; }
+        .markdown-body code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+        .markdown-body pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body pre code {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            background-color: transparent;
+            border: 0;
+        }
+        .markdown-body blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #656d76;
+            border-left: 0.25em solid #d0d7de;
+        }
+        .markdown-body table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-top: 0;
+            margin-bottom: 16px;
+            width: 100%;
+            overflow: auto;
+        }
+        .markdown-body table th,
+        .markdown-body table td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+        .markdown-body table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        .markdown-body table tr {
+            background-color: #ffffff;
+            border-top: 1px solid #d0d7de;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        .markdown-body img {
+            max-width: 100%;
+            box-sizing: content-box;
+            background-color: #ffffff;
+        }
+        .markdown-body hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #d0d7de;
+            border: 0;
+        }
+        .markdown-body strong { font-weight: 600; }
+        .markdown-body em { font-style: italic; }
+    </style>
+    
+</head>
+<body>
+    <div class="markdown-body">
+<h1>Laboratorium 13: HUD, Stany Gry i Audio</h1>
+<p><strong>Przedmiot:</strong> Tworzenie Gier Komputerowych</p>
+<p><strong>Technologia:</strong> Godot Engine 4.x (GDScript)</p>
+<p><strong>Czas trwania:</strong> 2h 15min</p>
+<hr>
+<h2>1. Cel i Temat Zajęć</h2>
+<p><strong>Blok III: 3D i Systemy. Projekt: Star Fox (klon 3D).</strong></p>
+<p>Gra ma już mechaniki, brakuje stanu, interfejsu i warstwy dźwiękowej. Dziś centralizujemy stan w autoładowanym <code>GameManager</code>, nakładamy HUD przez <code>CanvasLayer</code>, domykamy pętlę rozgrywki ekranami menu/koniec/ukończenie i dodajemy dźwięki zdarzeń.</p>
+<p><strong>Cele:</strong></p>
+<ul>
+<li><code>Autoload</code> (Singleton) jako globalny stan gry dostępny z dowolnego skryptu.</li>
+<li><code>CanvasLayer</code> z węzłami <code>Control</code> jako HUD nakładany na scenę 3D.</li>
+<li>Przejścia między scenami przez <code>change<em>scene</em>to_file</code>.</li>
+<li><code>AudioStreamPlayer</code> jako warstwa dźwiękowa zdarzeń sterowanych sygnałami.</li>
+</ul>
+<p><strong>Wymagania wstępne:</strong> ukończony Lab 12. Działa kolizja gracza ze ścianą (<code>body_entered</code>) i barrel roll z lokalną flagą nieśmiertelności. Wróg emituje <code>died(points)</code>.</p>
+<hr>
+<h2>2. Część Wstępna (ok. 15 min)</h2>
+<ol>
+<li><strong>Singleton kontra przekazywanie referencji.</strong> Wróg chce dodać punkty, statek chce zabrać życie — żaden nie zna drugiego. Jak przekazać te informacje bez bezpośrednich zależności między scenami? Jakie są wady Singletona?</li>
+<li><strong><code>CanvasLayer</code> nad sceną 3D.</strong> Dlaczego elementy UI (etykiety, paski) nie mogą być po prostu węzłami 3D umieszczonymi przed kamerą?</li>
+<li><strong>Dźwięk jako sprzężenie zwrotne.</strong> Strzał, trafienie, śmierć — każde z tych zdarzeń jest już emitowane jako sygnał. Co zyskujesz, podpinając dźwięk do sygnału w <code>GameManager</code>, zamiast wywoływać <code>play()</code> w skrypcie wroga lub gracza?</li>
+</ol>
+<hr>
+<h2>3. Materiały źródłowe</h2>
+<ul>
+<li><strong>Autoload / Singleton:</strong> https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html</li>
+<li><strong>CanvasLayer:</strong> https://docs.godotengine.org/en/stable/classes/class_canvaslayer.html</li>
+<li><strong>AudioStreamPlayer:</strong> https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer.html</li>
+<li><strong><code>change<em>scene</em>to<em>file</code>:</strong> https://docs.godotengine.org/en/stable/classes/class</em>scenetree.html#class-scenetree-method-change-scene-to-file</li>
+</ul>
+<p><strong>Punkt startowy:</strong> skopiuj <code>lab12/</code> jako <code>lab13/</code>.</p>
+<hr>
+<h2>4. Zadania laboratoryjne</h2>
+<hr>
+<h3>Zadanie 1: GameManager jako Autoload</h3>
+<p>Zaprojektuj globalny menedżer stanu w pliku <code>game_manager.gd</code>. Wymagana zawartość:</p>
+<ul>
+<li>stan: <code>score: int</code>, <code>lives: int</code>, <code>player<em>max</em>hp: int</code>, <code>player_hp: int</code>,</li>
+<li>sygnały stanu (do HUD): <code>score<em>changed(new</em>score)</code>, <code>lives<em>changed(new</em>lives)</code>, <code>hp<em>changed(new</em>hp)</code>, <code>game<em>over</code>, <code>level</em>complete</code>,</li>
+<li>sygnały zdarzeń (do SFX): <code>enemy<em>killed</code>, <code>player</em>damaged</code>,</li>
+<li>metody publiczne: <code>add<em>score(points)</code>, <code>player</em>hit(damage = 1)</code>, <code>reset()</code>,</li>
+<li>logika <code>add<em>score</code>: aktualizuje <code>score</code>, emituje <code>score</em>changed</code> <strong>i</strong> <code>enemy_killed</code>,</li>
+<li>logika <code>player<em>hit</code>: zmniejsza HP, emituje <code>hp</em>changed</code> <strong>i</strong> <code>player<em>damaged</code>; przy HP ≤ 0 → minus życie i reset HP; przy zerze żyć → emisja <code>game</em>over</code>.</li>
+</ul>
+<p>Zarejestruj plik w <strong>Project Settings → Autoload</strong> pod nazwą <code>GameManager</code>.</p>
+<p>Pytanie do refleksji: dlaczego osobny sygnał <code>enemy<em>killed</code> zamiast podpinania SFX do <code>score</em>changed</code>? Co się stanie, jeśli kiedyś dodasz „bonus za czas" zwiększający <code>score</code> bez killa wroga?</p>
+<p>Zintegruj z istniejącym kodem:</p>
+<ul>
+<li>sygnał <code>died(points)</code> wroga z Lab 11 → <code>GameManager.add_score(points)</code>,</li>
+<li><code><em>take</em>damage</code> gracza z Lab 12 → <code>GameManager.player_hit(1)</code> (lokalna zmienna <code>hp</code> znika).</li>
+</ul>
+<hr>
+<h3>Zadanie 2: HUD w CanvasLayer</h3>
+<p>Dodaj do <code>main.tscn</code> <code>CanvasLayer</code> z trzema elementami <code>Control</code>, każdy w innym rogu/krawędzi:</p>
+<ul>
+<li><code>Label</code> „Wynik" — lewy górny róg, format <code>"Wynik: %d"</code>,</li>
+<li><code>Label</code> „Życia" — prawy górny róg, format <code>"Życia: %d"</code>,</li>
+<li><code>ProgressBar</code> HP — dolna krawędź, <code>min<em>value = 0</code>, <code>max</em>value = GameManager.player<em>max</em>hp</code>.</li>
+</ul>
+<p>Każdy element zakotwicz w odpowiednim rogu (<code>Anchor Preset</code> w inspektorze) — bez kotwiczenia HUD rozjedzie się na innej rozdzielczości.</p>
+<p>Skrypt na <code>CanvasLayer</code> (lub <code>main.tscn</code>) podłącza w <code>_ready</code> sygnały <code>GameManager</code> do metod aktualizujących właściwości węzłów.</p>
+<hr>
+<h3>Zadanie 3: Pętla scen — menu, koniec, ukończenie</h3>
+<p>Utwórz trzy nowe sceny, każda z korzeniem <code>Control</code> wypełniającym ekran:</p>
+<ul>
+<li><strong><code>main<em>menu.tscn</code></strong> — tytuł + przycisk „Graj". Po kliknięciu: <code>GameManager.reset()</code> i <code>change</em>scene<em>to</em>file("res://main.tscn")</code>.</li>
+<li><strong><code>game_over.tscn</code></strong> — napis „Koniec gry" + wynik końcowy + przycisk „Menu".</li>
+<li><strong><code>level_complete.tscn</code></strong> — napis „Poziom ukończony" + wynik + przycisk powrotu.</li>
+</ul>
+<p>Przejścia między scenami wyzwalaj sygnałami <code>GameManager.game<em>over</code> / <code>level</em>complete</code> (np. lambdą podpiętą w <code>main.tscn</code>).</p>
+<p>Ustaw <code>main_menu.tscn</code> jako scenę startową (<strong>Project Settings → Application → Run → Main Scene</strong>).</p>
+<p>Sprawdź pełną pętlę: menu → gra → game over → menu → gra (z czystym wynikiem).</p>
+<hr>
+<h3>Zadanie 4: Dźwięk zdarzeń</h3>
+<p>Dodaj warstwę dźwiękową do trzech zdarzeń: śmierć wroga, trafienie gracza, koniec gry. Pliki dźwiękowe (krótkie <code>.wav</code> lub <code>.ogg</code>) wyszukaj samodzielnie — np. zasoby z domeny publicznej, generator <code>sfxr</code>/<code>bfxr</code> w przeglądarce. Umieść w katalogu <code>assets/audio/</code>.</p>
+<p>W <code>game_manager.gd</code> (Autoload jest dobrym miejscem na centralny mikser; podpinamy się do <strong>sygnałów zdarzeń</strong>, nie do sygnałów stanu — patrz Zad. 1):</p>
+<pre><code>var _sfx_score := AudioStreamPlayer.new()
+var _sfx_hit := AudioStreamPlayer.new()
+var _sfx_game_over := AudioStreamPlayer.new()
+
+func _ready():
+    add_child(_sfx_score)
+    add_child(_sfx_hit)
+    add_child(_sfx_game_over)
+    _sfx_score.stream = preload(&quot;res://assets/audio/score.wav&quot;)
+    _sfx_hit.stream = preload(&quot;res://assets/audio/hit.wav&quot;)
+    _sfx_game_over.stream = preload(&quot;res://assets/audio/game_over.wav&quot;)
+    enemy_killed.connect(func(): _sfx_score.play())
+    player_damaged.connect(func(): _sfx_hit.play())
+    game_over.connect(func(): _sfx_game_over.play())</code></pre>
+<p>Pytanie do refleksji: co byłoby nie tak, gdybyś wywoływał <code>AudioStreamPlayer.play()</code> w skrypcie wroga (przy <code>queue<em>free</code>)? A co — gdybyś podpiął SFX hit do <code>hp</em>changed</code> zamiast <code>player_damaged</code>?</p>
+<hr>
+<h2>5. System oceniania</h2>
+<p><strong>Sposób oddania:</strong> push do repozytorium (folder <code>lab13/</code>) + demo przy prowadzącym.</p>
+<ul>
+<li><strong>[3.0 pkt]</strong> <code>GameManager</code> zarejestrowany jako Autoload. Wynik i życia wyświetlane w HUD i aktualizują się w czasie gry.</li>
+<li><strong>[4.0 pkt]</strong> Trzy ekrany działają: menu → gra → koniec/ukończenie. <code>reset()</code> zeruje stan między partiami.</li>
+<li><strong>[5.0 pkt]</strong> Dźwięki podpięte do sygnałów <code>GameManager</code> (co najmniej trzy zdarzenia). Pasek HP w HUD odzwierciedla aktualne zdrowie. Brak błędów po pełnej pętli menu → gra → game over → menu.</li>
+</ul>
+<hr>
+<h2>6. Zadania dodatkowe (*)</h2>
+<h3>Zadanie *: Muzyka tła w pętli</h3>
+<p>Dodaj <code>AudioStreamPlayer</code> z muzyką tła w <code>main.tscn</code>. Ustaw <code>loop</code> na zasobie <code>AudioStream</code> i niskie <code>volume<em>db</code> (np. -10), żeby nie zagłuszała SFX. W <code>main</em>menu.tscn</code> osobna ścieżka. Pamiętaj, żeby zatrzymać muzykę przed zmianą sceny.</p>
+<h3>Zadanie **: Najlepszy wynik sesji</h3>
+<p>W <code>GameManager</code> dodaj <code>best<em>score</code> aktualizowany przy <code>game</em>over</code>, gdy <code>score > best<em>score</code>. Wyświetl <code>best</em>score</code> na ekranie <code>game_over.tscn</code> obok aktualnego wyniku.</p>
+    </div>
+</body>
+</html>

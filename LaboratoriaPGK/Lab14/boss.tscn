@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://boss001"]
+
+[ext_resource type="Script" path="res://scripts/boss.gd" id="1_boss"]
+
+[sub_resource type="StandardMaterial3D" id="BossBodyMat"]
+albedo_color = Color(0.12, 0.05, 0.35, 1)
+metallic = 0.85
+roughness = 0.18
+
+[sub_resource type="StandardMaterial3D" id="BossRingMat"]
+albedo_color = Color(0.45, 0.0, 0.75, 1)
+metallic = 0.95
+roughness = 0.12
+emission_enabled = true
+emission = Color(0.8, 0.0, 1.4, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="StandardMaterial3D" id="BossCoreMat"]
+albedo_color = Color(1.0, 0.05, 0.45, 1)
+emission_enabled = true
+emission = Color(3.0, 0.05, 0.9, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="StandardMaterial3D" id="BossCannonMat"]
+albedo_color = Color(0.28, 0.28, 0.38, 1)
+metallic = 0.95
+roughness = 0.1
+
+[sub_resource type="SphereMesh" id="CoreBodyMesh"]
+radius = 1.8
+height = 3.6
+
+[sub_resource type="CylinderMesh" id="RingMesh"]
+top_radius = 2.85
+bottom_radius = 2.85
+height = 0.22
+
+[sub_resource type="SphereMesh" id="CoreGlowMesh"]
+radius = 0.62
+height = 1.24
+
+[sub_resource type="CylinderMesh" id="CannonMesh"]
+top_radius = 0.14
+bottom_radius = 0.14
+height = 1.2
+
+[sub_resource type="SphereShape3D" id="HitShape1"]
+radius = 2.6
+
+[sub_resource type="SphereShape3D" id="HitShape2"]
+radius = 1.15
+
+[node name="Boss" type="Node3D"]
+script = ExtResource("1_boss")
+
+[node name="BossModel" type="Node3D" parent="."]
+
+[node name="CoreBody" type="MeshInstance3D" parent="BossModel"]
+mesh = SubResource("CoreBodyMesh")
+surface_material_override/0 = SubResource("BossBodyMat")
+
+[node name="Ring" type="MeshInstance3D" parent="BossModel"]
+mesh = SubResource("RingMesh")
+surface_material_override/0 = SubResource("BossRingMat")
+
+[node name="CoreGlow" type="MeshInstance3D" parent="BossModel"]
+mesh = SubResource("CoreGlowMesh")
+surface_material_override/0 = SubResource("BossCoreMat")
+
+[node name="CannonLeft" type="MeshInstance3D" parent="BossModel"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -2.2, 0, -1.2)
+mesh = SubResource("CannonMesh")
+surface_material_override/0 = SubResource("BossCannonMat")
+
+[node name="CannonRight" type="MeshInstance3D" parent="BossModel"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 2.2, 0, -1.2)
+mesh = SubResource("CannonMesh")
+surface_material_override/0 = SubResource("BossCannonMat")
+
+[node name="HitboxPhase1" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitboxPhase1"]
+shape = SubResource("HitShape1")
+
+[node name="HitboxPhase2" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitboxPhase2"]
+shape = SubResource("HitShape2")
+disabled = true

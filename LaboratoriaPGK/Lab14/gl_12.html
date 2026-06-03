@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gry_lab_12</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .markdown-body {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        .markdown-body h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h3 { font-size: 1.25em; }
+        .markdown-body h4 { font-size: 1em; }
+        .markdown-body h5 { font-size: 0.875em; }
+        .markdown-body h6 {
+            font-size: 0.85em;
+            color: #656d76;
+        }
+        .markdown-body p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        .markdown-body ul,
+        .markdown-body ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        .markdown-body li { margin-top: 0.25em; }
+        .markdown-body li + li { margin-top: 0.25em; }
+        .markdown-body code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+        .markdown-body pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body pre code {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            background-color: transparent;
+            border: 0;
+        }
+        .markdown-body blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #656d76;
+            border-left: 0.25em solid #d0d7de;
+        }
+        .markdown-body table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-top: 0;
+            margin-bottom: 16px;
+            width: 100%;
+            overflow: auto;
+        }
+        .markdown-body table th,
+        .markdown-body table td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+        .markdown-body table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        .markdown-body table tr {
+            background-color: #ffffff;
+            border-top: 1px solid #d0d7de;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        .markdown-body img {
+            max-width: 100%;
+            box-sizing: content-box;
+            background-color: #ffffff;
+        }
+        .markdown-body hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #d0d7de;
+            border: 0;
+        }
+        .markdown-body strong { font-weight: 600; }
+        .markdown-body em { font-style: italic; }
+    </style>
+    
+</head>
+<body>
+    <div class="markdown-body">
+<h1>Laboratorium 12: Środowisko, Barrel Roll i Kamera</h1>
+<p><strong>Przedmiot:</strong> Tworzenie Gier Komputerowych</p>
+<p><strong>Technologia:</strong> Godot Engine 4.x (GDScript)</p>
+<p><strong>Czas trwania:</strong> 2h 15min</p>
+<hr>
+<h2>1. Cel i Temat Zajęć</h2>
+<p><strong>Blok III: 3D i Systemy. Projekt: Star Fox (klon 3D).</strong></p>
+<p>Trzy elementy budujące atmosferę i odczucie sterowania (<em>game feel</em>): tło sceny i korytarz z kolizją, opóźniona kamera śledząca statek oraz barrel roll jako ruch obronny zaimplementowany przez <code>AnimationPlayer</code>.</p>
+<p><strong>Cele:</strong></p>
+<ul>
+<li><code>WorldEnvironment</code> + <code>Sky</code> jako tło sceny 3D.</li>
+<li><code>StaticBody3D</code> + sygnał <code>body_entered</code> jako kolizja gracza ze ścianą.</li>
+<li>Kamera śledząca cel z opóźnieniem (<code>lerp</code> na pozycji).</li>
+<li>Animacja <code>AnimationPlayer</code> + flaga nieśmiertelności w trakcie odtwarzania.</li>
+</ul>
+<p><strong>Wymagania wstępne:</strong> ukończony Lab 11. Działa spawner fal, wrogowie z <code>Tween</code>, ostrzał wrogów w kierunku gracza, pocisk uniwersalny (parametr <code>direction</code>).</p>
+<hr>
+<h2>2. Część Wstępna (ok. 15 min)</h2>
+<ol>
+<li><strong>Game feel — co to znaczy?</strong> Porównaj kamerę przyklejoną sztywno do statku z kamerą z drobnym opóźnieniem (<code>lerp</code>). Dlaczego małe opóźnienie sprawia wrażenie „ciężaru" pojazdu?</li>
+<li><strong><code>AnimationPlayer</code> kontra <code>Tween</code>.</strong> <code>Tween</code> animuje jedną właściwość z kodu. <code>AnimationPlayer</code> to nagrany zestaw kluczy dla wielu właściwości i wielu węzłów. Kiedy każde z narzędzi jest naturalnym wyborem?</li>
+<li><strong>Nieśmiertelność podczas barrel roll.</strong> Statek obraca się przez ~0.6 s i w tym czasie nie powinien dostawać obrażeń. Jak rozwiązać to bez bałaganu w kodzie? Gdzie trzymać flagę <code>is_invincible</code>?</li>
+</ol>
+<hr>
+<h2>3. Materiały źródłowe</h2>
+<ul>
+<li><strong>WorldEnvironment:</strong> https://docs.godotengine.org/en/stable/classes/class_worldenvironment.html</li>
+<li><strong>AnimationPlayer:</strong> https://docs.godotengine.org/en/stable/classes/class_animationplayer.html</li>
+<li><strong><code>lerp</code>:</strong> https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerp</li>
+<li><strong>StaticBody3D:</strong> https://docs.godotengine.org/en/stable/classes/class_staticbody3d.html</li>
+</ul>
+<p><strong>Punkt startowy:</strong> skopiuj <code>lab11/</code> jako <code>lab12/</code>.</p>
+<hr>
+<h2>4. Zadania laboratoryjne</h2>
+<hr>
+<h3>Zadanie 1: Tło sceny</h3>
+<p>Dodaj do <code>main.tscn</code> węzeł <code>WorldEnvironment</code> z zasobem <code>Environment</code>. Ustaw tło na <code>Sky</code> z <code>ProceduralSkyMaterial</code>. Dobierz kolory pasujące do tematu (np. ciemne, gwiezdne).</p>
+<p>Jeśli niebo „przepala" scenę — zmniejsz <code>sky<em>energy</em>multiplier</code> lub przejdź na ręcznie ustawione <code>Ambient Light</code> w sekcji <code>Environment > Ambient Light</code>.</p>
+<hr>
+<h3>Zadanie 2: Korytarz ze ścianami</h3>
+<p>Dodaj symetrycznie po obu stronach trasy ściany jako <code>StaticBody3D</code> (<code>MeshInstance3D</code> z <code>BoxMesh</code> wydłużonym w Z + <code>CollisionShape3D</code> z dopasowanym <code>BoxShape3D</code>).</p>
+<p>W skrypcie statku wykryj uderzenie w ścianę. Statek to <code>Area3D</code>, ściana to <code>StaticBody3D</code> — który sygnał musisz podłączyć: <code>area<em>entered</code> czy <code>body</em>entered</code>? Dlaczego?</p>
+<p>Zaimplementuj prywatną metodę <code><em>take</em>damage(amount: int)</code> — zmniejsza lokalne <code>hp</code> i wypisuje aktualną wartość. Pełna integracja z <code>GameManager</code> przyjdzie w Lab 13.</p>
+<hr>
+<h3>Zadanie 3: Kamera z opóźnieniem</h3>
+<p>Wydziel z hierarchii:</p>
+<ul>
+<li><code>CameraTarget</code> (pusty <code>Node3D</code>) jako dziecko <code>PathFollow3D</code> w miejscu, gdzie wcześniej była kamera,</li>
+<li><code>Camera3D</code> przeniesiona poza <code>PathFollow3D</code> (np. dziecko głównego <code>Node3D</code>).</li>
+</ul>
+<p>Skrypt na <code>Camera3D</code> w <code>_process(delta)</code> ma podążać za <code>CameraTarget</code> z opóźnieniem:</p>
+<pre><code>global_position = global_position.lerp(camera_target.global_position, lag_speed * delta)</code></pre>
+<p>Dobierz <code>lag<em>speed</code> (5–10 to rozsądny zakres). Referencję na <code>CameraTarget</code> przekaż przez <code>@export var camera</em>target: Node3D</code>.</p>
+<p>Pytanie do refleksji: po co w ogóle wydzielać <code>CameraTarget</code>, skoro można <code>lerp</code>-ować bezpośrednio do statku?</p>
+<p><strong>Weryfikacja zgodności z Lab 11.</strong> Zmiana hierarchii kamery może niezauważalnie zepsuć spawner fal, który odczytuje <code>PathFollow3D.global_position</code>. Uruchom grę i potwierdź, że:</p>
+<ul>
+<li>wrogowie spawnują się w tych samych miejscach co przed zmianą (przed kamerą, nie za nią),</li>
+<li>ostrzał wrogów dalej trafia w gracza,</li>
+<li>spawner nie szuka węzła <code>Camera3D</code> w starej ścieżce (jeśli tak — zaktualizuj <code>@export</code> lub pobranie węzła).</li>
+</ul>
+<hr>
+<h3>Zadanie 4: Barrel Roll</h3>
+<p>Dodaj <code>AnimationPlayer</code> jako dziecko węzła modelu statku (<code>MeshInstance3D</code> lub jego rodzica). Utwórz animację <code>barrel_roll</code>:</p>
+<ul>
+<li>czas trwania: 0.6 s,</li>
+<li>ścieżka: <code>rotation:z</code> modelu statku, klucze <code>0.0</code> → <code>TAU</code> (≈6.2832).</li>
+</ul>
+<p>W skrypcie statku zaimplementuj logikę:</p>
+<ul>
+<li>flaga <code><em>is</em>invincible: bool</code>,</li>
+<li>na klawisz (<code>ui<em>select</code> lub własna akcja): jeżeli nie trwa już barrel roll, ustaw flagę, odtwórz animację, poczekaj <code>await $AnimationPlayer.animation</em>finished</code>, zdejmij flagę,</li>
+<li>w <code><em>take</em>damage</code> na początku: <code>if <em>is</em>invincible: return</code>.</li>
+</ul>
+<p>Sprawdź eksperymentalnie: wleć w ścianę podczas trwania barrel roll. <code>hp</code> nie powinno się zmienić.</p>
+<hr>
+<h2>5. System oceniania</h2>
+<p><strong>Sposób oddania:</strong> push do repozytorium (folder <code>lab12/</code>) + demo przy prowadzącym.</p>
+<ul>
+<li><strong>[3.0 pkt]</strong> <code>WorldEnvironment</code> z niebem widocznym w tle. Ściany korytarza obecne w scenie jako geometria.</li>
+<li><strong>[4.0 pkt]</strong> Kolizja ze ścianą zmniejsza lokalne <code>hp</code> (wypisane w konsoli). Kamera z opóźnieniem działa — widać efekt przy gwałtownym ruchu w XY.</li>
+<li><strong>[5.0 pkt]</strong> Barrel roll obraca model przez <code>AnimationPlayer</code>. Flaga nieśmiertelności blokuje obrażenia w trakcie animacji. Brak błędów w konsoli.</li>
+</ul>
+<hr>
+<h2>6. Zadania dodatkowe (*)</h2>
+<h3>Zadanie *: Drganie kamery przy trafieniu</h3>
+<p>Przy każdym wywołaniu <code><em>take</em>damage</code> dodaj krótkie drganie kamery (~0.3 s) — losowy <code>Vector3</code> z malejącą amplitudą dodawany do pozycji <code>Camera3D</code> co klatkę. Dzięki wydzielonemu <code>CameraTarget</code> z Zadania 3 efekt nie psuje logiki śledzenia.</p>
+<h3>Zadanie **: Cooldown barrel roll</h3>
+<p>Barrel roll dostępny dopiero po naładowaniu (3 s). Wskaźnik gotowości: zmień <code>albedo_color</code> materiału modelu silnika (szary → zielony), gdy gotowy.</p>
+    </div>
+</body>
+</html>

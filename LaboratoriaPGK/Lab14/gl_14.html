@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gry_lab_14</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .markdown-body {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        .markdown-body h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h3 { font-size: 1.25em; }
+        .markdown-body h4 { font-size: 1em; }
+        .markdown-body h5 { font-size: 0.875em; }
+        .markdown-body h6 {
+            font-size: 0.85em;
+            color: #656d76;
+        }
+        .markdown-body p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        .markdown-body ul,
+        .markdown-body ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        .markdown-body li { margin-top: 0.25em; }
+        .markdown-body li + li { margin-top: 0.25em; }
+        .markdown-body code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+        .markdown-body pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body pre code {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            background-color: transparent;
+            border: 0;
+        }
+        .markdown-body blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #656d76;
+            border-left: 0.25em solid #d0d7de;
+        }
+        .markdown-body table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-top: 0;
+            margin-bottom: 16px;
+            width: 100%;
+            overflow: auto;
+        }
+        .markdown-body table th,
+        .markdown-body table td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+        .markdown-body table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        .markdown-body table tr {
+            background-color: #ffffff;
+            border-top: 1px solid #d0d7de;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        .markdown-body img {
+            max-width: 100%;
+            box-sizing: content-box;
+            background-color: #ffffff;
+        }
+        .markdown-body hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #d0d7de;
+            border: 0;
+        }
+        .markdown-body strong { font-weight: 600; }
+        .markdown-body em { font-style: italic; }
+    </style>
+    
+</head>
+<body>
+    <div class="markdown-body">
+<h1>Laboratorium 14: Boss, FSM i Domknięcie Projektu</h1>
+<p><strong>Przedmiot:</strong> Tworzenie Gier Komputerowych</p>
+<p><strong>Technologia:</strong> Godot Engine 4.x (GDScript)</p>
+<p><strong>Czas trwania:</strong> 2h 15min</p>
+<hr>
+<h2>1. Cel i Temat Zajęć</h2>
+<p><strong>Blok III: 3D i Systemy. Projekt: Star Fox (klon 3D) — domknięcie.</strong></p>
+<p>Ostatnie zajęcia bloku Godot. Boss z wielofazową maszyną stanów łączy w jednej scenie wszystko z poprzednich pięciu laboratoriów: sygnały, <code>Tween</code>, Autoload, kolizje, animacje. Końcowe ~30 minut to peer review w parach — analogicznie do Lab 08.</p>
+<p><strong>Cele dydaktyczne:</strong></p>
+<ul>
+<li>FSM przez <code>enum</code> + <code>match</code> w GDScript (kontynuacja wzorca z Lab 08).</li>
+<li>Wielofazowy boss: zmiana zachowania i hitboxu przy progach HP.</li>
+<li>Refaktoryzacja: identyfikacja konkretnych problemów i ich usuwanie.</li>
+<li>Czytanie cudzego kodu w projekcie Godot — peer review.</li>
+<li><code>GPUParticles3D</code> jako efekt śmierci bossa.</li>
+</ul>
+<p><strong>Wymagania wstępne:</strong> ukończony Lab 13. Działa <code>GameManager</code> jako Autoload, HUD reaguje na sygnały, pełna pętla scen (menu → gra → koniec/ukończenie), <code>AudioStreamPlayer</code> zarejestrowany w grze.</p>
+<hr>
+<h2>2. Część Wstępna (ok. 15 min) — Dyskusja</h2>
+<ol>
+<li><strong>Maszyna stanów kontra <code>if/elif</code> po HP.</strong></li>
+<ul>
+<li>Boss mógłby co klatkę robić <code>if hp > 30: pattern_a()</code>. Co się stanie, gdy dodasz czwarty wzorzec ataku?</li>
+<li>Porównaj z <code>match current_state:</code> i osobnymi metodami per stan.</li>
+</ul>
+</ol>
+<ol>
+<li><strong>Sygnały zamiast bezpośrednich wywołań.</strong></li>
+<ul>
+<li>Boss wie, że umiera. Czy powinien sam wywołać <code>GameManager.level_complete.emit()</code>?</li>
+<li>Jakie zależności tworzy każde z podejść?</li>
+</ul>
+</ol>
+<ol>
+<li><strong>Peer review — czego szukać w kodzie kolegi.</strong></li>
+<ul>
+<li>Wymień trzy rzeczy, które chcesz sprawdzić, patrząc na cudzy projekt Star Fox po raz pierwszy. Nie „czy gra działa" — kod, nie efekt.</li>
+</ul>
+</ol>
+<hr>
+<h2>3. Materiały źródłowe</h2>
+<ul>
+<li><strong><code>match</code> w GDScript:</strong> https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#match</li>
+<li><strong><code>enum</code> w GDScript:</strong> https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#enums</li>
+<li><strong>GPUParticles3D:</strong> https://docs.godotengine.org/en/stable/classes/class_gpuparticles3d.html</li>
+<li><strong>Tween (przypomnienie):</strong> https://docs.godotengine.org/en/stable/classes/class_tween.html</li>
+</ul>
+<p><strong>Punkt startowy:</strong> skopiuj <code>lab13/</code> jako <code>lab14/</code>.</p>
+<hr>
+<h2>4. Zadania laboratoryjne</h2>
+<hr>
+<h3>Zadanie 1: Scena bossa z dwoma hitboxami</h3>
+<p>Utwórz <code>boss.tscn</code>. Boss to <code>Node3D</code> z modelem (<code>MeshInstance3D</code> — większy niż wróg) i <strong>dwoma niezależnymi <code>Area3D</code></strong> o różnych <code>CollisionShape3D</code>:</p>
+<ul>
+<li><code>HitboxPhase1</code> — większy obszar (faza 1, łatwy do trafienia, mniejsze obrażenia per trafienie),</li>
+<li><code>HitboxPhase2</code> — mniejszy obszar (faza 2, większe obrażenia per trafienie).</li>
+</ul>
+<p>Na starcie aktywny tylko <code>HitboxPhase1</code> (<code>disabled = true</code> na <code>CollisionShape3D</code> drugiego). Sygnał <code>signal died</code> na skrypcie bossa.</p>
+<p>Warstwy kolizji jak u zwykłego wroga (Layer 2).</p>
+<hr>
+<h3>Zadanie 2: Maszyna stanów</h3>
+<p>W skrypcie bossa zdefiniuj <code>enum State { IDLE, ATTACK, RETREAT, DEATH }</code> i pole <code>current_state</code>.</p>
+<p>Wymagana architektura:</p>
+<ul>
+<li><code><em>enter</em>state(new<em>state)</code> — wywoływane raz przy zmianie stanu, używa <code>match</code> i deleguje do <code></em>start_*</code>,</li>
+<li><code><em>start</em>idle / <em>start</em>attack / <em>start</em>retreat / <em>start</em>death</code> — inicjalizacja konkretnego stanu (start <code>Tween</code>, reset timera),</li>
+<li><code>take_hit(damage)</code> — wejście od trafień; modyfikuje <code>hp</code>, decyduje o przejściu stanu i zmianie hitboxu.</li>
+</ul>
+<p>Wymagane przejścia:</p>
+<ul>
+<li>start: <code>IDLE</code> (boss stoi ~2 s, przechodzi do <code>ATTACK</code>),</li>
+<li><code>ATTACK</code>: strzela (pocisk wroga z Lab 11) i odchyla się <code>Tween</code> przez ~4 s, potem <code>RETREAT</code>,</li>
+<li><code>RETREAT</code>: cofa się w Z przez ~1.5 s, potem znowu <code>ATTACK</code>,</li>
+<li>przy <code>hp ≤ max_hp / 2</code>: pierwszy raz przejdź do fazy 2 — zamień aktywny hitbox (<code>disabled</code> flagi),</li>
+<li>przy <code>hp ≤ 0</code>: <code>DEATH</code> — emituje <code>died</code>, instancjonuje eksplozję (Zadanie 3), <code>queue_free()</code>.</li>
+</ul>
+<p>Zabezpiecz <code>take<em>hit</code> przed wielokrotnym wejściem w <code>DEATH</code> (<code>if current</em>state == State.DEATH: return</code>).</p>
+<hr>
+<h3>Zadanie 3: Eksplozja cząsteczkowa</h3>
+<p>Pierwszy kontakt z <code>GPUParticles3D</code>. Utwórz <code>explosion.tscn</code> (<code>Node3D</code> + <code>GPUParticles3D</code>) i skonfiguruj:</p>
+<ul>
+<li><code>Amount</code>: 30–60, <code>Lifetime</code>: 0.6 s, <code>One Shot: true</code>, <code>Explosiveness: 1.0</code>,</li>
+<li><code>Process Material</code>: nowy <code>ParticleProcessMaterial</code>, <code>Spread: 180°</code> (sferyczne), <code>Initial Velocity</code> w okolicy 4–10, <code>Scale</code> ~0.2–0.5.</li>
+</ul>
+<p>Skrypt sceny po emisji ma sam siebie usunąć:</p>
+<pre><code>func _ready():
+    await get_tree().create_timer(0.8).timeout
+    queue_free()</code></pre>
+<p>Zintegruj z bossem: w <code><em>start</em>death</code> przed <code>queue_free()</code> zainstancjonuj <code>explosion.tscn</code> w globalnej pozycji bossa. Rozważ dodatkową, większą eksplozję dla efektu kulminacji.</p>
+<p><strong>Opcjonalnie:</strong> ten sam mechanizm zastosuj do śmierci zwykłego wroga (Lab 11) — eksplozja w mniejszej skali.</p>
+<hr>
+<h3>Zadanie 4: Boss w grze</h3>
+<p>Dodaj bossa do <code>main.tscn</code> w odległości ~60 jednostek przed startem szyny.</p>
+<p>Podłącz:</p>
+<ul>
+<li>sygnał <code>died</code> bossa → <code>GameManager.level_complete.emit()</code> (lambdą lub metodą; zastanów się, dlaczego boss nie powinien tego wywołać sam),</li>
+<li><code>area<em>entered</code> na <code>HitboxPhase1</code> i <code>HitboxPhase2</code> → <code>take</em>hit(1)</code> i <code>take_hit(2)</code>.</li>
+</ul>
+<p>Przejdź pełną pętlę gry: menu → gra → przejście przez fale → boss → ekran <code>level_complete</code>.</p>
+<hr>
+<h3>Zadanie 5: Refaktoryzacja</h3>
+<p>Przejrzyj cały projekt <code>lab14/</code> i wprowadź <strong>co najmniej trzy</strong> poprawki z poniższych kategorii. Jeden commit na każdą kategorię, w treści commita podaj kategorię.</p>
+<ul>
+<li><strong>Magiczne liczby:</strong> czy <code>0.3</code>, <code>60</code>, <code>5</code> mają nazwy? <code>const</code> lub <code>@export</code>.</li>
+<li><strong>Długie metody:</strong> funkcja > 25 linii — wydziel spójny fragment.</li>
+<li><strong>Zakotwiczone ścieżki węzłów:</strong> <code>get_node("/root/Main/...")</code> w kodzie — zastąp <code>@export</code> lub grupą.</li>
+<li><strong>Powielony kod:</strong> logika spawnu pocisku w wielu miejscach — wydziel jako pomocnik.</li>
+<li><strong>Sygnały zamiast wywołań:</strong> węzeł wywołuje metodę na innym, gdzie wystarczyłby sygnał.</li>
+</ul>
+<hr>
+<h3>Zadanie 6: Peer Review (ostatnie ~30 min)</h3>
+<p>Prowadzący losuje pary. Każdy student:</p>
+<ol>
+<li>Klonuje repozytorium partnera, otwiera <code>lab14/</code> w Godot.</li>
+<li>Uruchamia grę i przechodzi pełną pętlę: menu → gra → boss → ekran końcowy.</li>
+<li>Tworzy w repozytorium partnera Issue z poniższą listą kontrolną:</li>
+</ol>
+<pre><code>[ ] Projekt uruchamia się bez błędów w konsoli Godot.
+[ ] Szyna (PathFollow3D) działa — kamera jedzie do przodu.
+[ ] Strzelanie i kolizje działają (wrogowie giną, wynik rośnie).
+[ ] Boss ma co najmniej dwa stany z różnym zachowaniem.
+[ ] HUD wyświetla wynik, HP i życia.
+[ ] GameManager jest Autoloadem (widoczny w Project Settings).
+[ ] Brak magicznych liczb w głównych skryptach.
+[ ] Refaktoryzacja: co najmniej 3 commity z opisem kategorii.</code></pre>
+<p>Recenzent dopisuje dwa komentarze tekstowe: jeden fragment kodu wart zachowania i jedna konkretna sugestia poprawy.</p>
+<hr>
+<h2>5. System oceniania</h2>
+<p><strong>Sposób oddania:</strong> push do repozytorium (folder <code>lab14/</code>; repozytorium powinno zawierać foldery <code>lab09/</code>–<code>lab14/</code> jako historię projektu) + demo przy prowadzącym przed peer review.</p>
+<ul>
+<li><strong>[3.0 pkt]</strong> Boss obecny w scenie z działającymi hitboxami (trafienia rejestrowane lub HP spada).</li>
+<li><strong>[4.0 pkt]</strong> FSM z co najmniej trzema stanami widocznie zmienia zachowanie przy progu HP. Śmierć bossa wyzwala ekran ukończenia. Eksplozja cząsteczkowa pojawia się w pozycji bossa.</li>
+<li><strong>[5.0 pkt]</strong> Refaktoryzacja z commitami per kategorię. Peer review wykonane jako Issue w repozytorium partnera. Brak błędów w konsoli przez pełną pętlę gry.</li>
+</ul>
+<hr>
+<h2>6. Zadania dodatkowe (*)</h2>
+<h3>Zadanie *: Wskaźnik lock-on</h3>
+<p>Gdy boss jest w polu widzenia kamery, wyświetl w HUD prostokąt (<code>Panel</code>/<code>TextureRect</code>) wokół jego ekranowej pozycji. Konwersja pozycji 3D na 2D: <code>camera.unproject<em>position(boss.global</em>position)</code>. Ukryj wskaźnik, gdy <code>camera.is<em>position</em>behind_camera(...)</code> zwraca <code>true</code>.</p>
+<h3>Zadanie **: Pasek HP bossa</h3>
+<p>Pasek HP bossa w HUD — widoczny tylko, gdy boss żyje. Kolor paska zmienia się wraz ze spadkiem HP (zielony → żółty → czerwony) przez <code>modulate</code> na <code>ProgressBar</code> lub gradient.</p>
+    </div>
+</body>
+</html>

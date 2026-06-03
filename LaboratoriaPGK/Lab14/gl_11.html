@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gry_lab_11</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .markdown-body {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        .markdown-body h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h3 { font-size: 1.25em; }
+        .markdown-body h4 { font-size: 1em; }
+        .markdown-body h5 { font-size: 0.875em; }
+        .markdown-body h6 {
+            font-size: 0.85em;
+            color: #656d76;
+        }
+        .markdown-body p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        .markdown-body ul,
+        .markdown-body ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        .markdown-body li { margin-top: 0.25em; }
+        .markdown-body li + li { margin-top: 0.25em; }
+        .markdown-body code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+        .markdown-body pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body pre code {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            background-color: transparent;
+            border: 0;
+        }
+        .markdown-body blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #656d76;
+            border-left: 0.25em solid #d0d7de;
+        }
+        .markdown-body table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-top: 0;
+            margin-bottom: 16px;
+            width: 100%;
+            overflow: auto;
+        }
+        .markdown-body table th,
+        .markdown-body table td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+        .markdown-body table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        .markdown-body table tr {
+            background-color: #ffffff;
+            border-top: 1px solid #d0d7de;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        .markdown-body img {
+            max-width: 100%;
+            box-sizing: content-box;
+            background-color: #ffffff;
+        }
+        .markdown-body hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #d0d7de;
+            border: 0;
+        }
+        .markdown-body strong { font-weight: 600; }
+        .markdown-body em { font-style: italic; }
+    </style>
+    
+</head>
+<body>
+    <div class="markdown-body">
+<h1>Laboratorium 11: Wrogowie i Fale</h1>
+<p><strong>Przedmiot:</strong> Tworzenie Gier Komputerowych</p>
+<p><strong>Technologia:</strong> Godot Engine 4.x (GDScript)</p>
+<p><strong>Czas trwania:</strong> 2h 15min</p>
+<hr>
+<h2>1. Cel i Temat Zajęć</h2>
+<p><strong>Blok III: 3D i Systemy. Projekt: Star Fox (klon 3D).</strong></p>
+<p>Zamiana statycznych celów z Lab 10 na wrogów: poruszają się, mają punkty życia i strzelają. Mechanizm fal pokazuje wzorzec separacji danych od logiki — dane sterują kodem, nie odwrotnie.</p>
+<p><strong>Cele:</strong></p>
+<ul>
+<li>Scena wroga jako niezależna jednostka z eksportowanymi parametrami.</li>
+<li>Animacja właściwości przez <code>Tween</code> zamiast ręcznego liczenia w <code>_process</code>.</li>
+<li>Spawner fal: <code>Timer</code>/akumulator + tablica konfiguracji (data-driven).</li>
+<li>Sygnał <code>died(points)</code> jako luźne powiązanie wroga z resztą gry.</li>
+<li>Strzelanie wroga w kierunku gracza (przez grupę, nie ścieżkę węzła).</li>
+</ul>
+<p><strong>Wymagania wstępne:</strong> ukończony Lab 10. Działa strzelanie gracza, kolizje pocisku z celem statycznym (<code>area_entered</code>), warstwy kolizji ustawione (gracz Layer 1, pocisk gracza Layer 3, cele Layer 2).</p>
+<hr>
+<h2>2. Część Wstępna (ok. 15 min)</h2>
+<ol>
+<li><strong>Wzorzec danych fal.</strong> Masz pięć fal — każda inna kombinacja typów, pozycji i opóźnień. Czy <code>if wave == 1: ... elif wave == 2: ...</code> to dobry projekt? Jaką strukturę danych zastosujesz zamiast tego?</li>
+<li><strong><code>Tween</code> kontra <code>_process</code>.</strong> W Lab 09 ruch statku to <code>position.x += speed * delta</code> co klatkę. <code>Tween</code> animuje właściwość od A do B w zadanym czasie. Kiedy każde z podejść jest wygodniejsze?</li>
+<li><strong>Wróg pyta o gracza.</strong> Wymień co najmniej dwa sposoby, w jakie węzeł wroga może uzyskać pozycję węzła gracza w Godot. Który z nich tworzy silniejsze powiązanie między scenami?</li>
+</ol>
+<hr>
+<h2>3. Materiały źródłowe</h2>
+<ul>
+<li><strong>Tween w Godot 4:</strong> https://docs.godotengine.org/en/stable/classes/class_tween.html</li>
+<li><strong>Timer:</strong> https://docs.godotengine.org/en/stable/classes/class_timer.html</li>
+<li><strong><code>get<em>node</code> i <code>$</code>:</strong> https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript</em>basics.html#node-paths</li>
+<li><strong>Groups:</strong> https://docs.godotengine.org/en/stable/tutorials/scripting/groups.html</li>
+</ul>
+<p><strong>Punkt startowy:</strong> skopiuj <code>lab10/</code> jako <code>lab11/</code>. Usuń statyczne cele z <code>main.tscn</code> — zastąpi je spawner.</p>
+<hr>
+<h2>4. Zadania laboratoryjne</h2>
+<hr>
+<h3>Zadanie 1: Scena wroga z parametrami</h3>
+<p>Utwórz <code>enemy.tscn</code> o strukturze analogicznej do <code>target.tscn</code> z Lab 10 (<code>Node3D</code> + <code>MeshInstance3D</code> + <code>Area3D</code>/<code>CollisionShape3D</code>).</p>
+<p>Ustaw warstwy kolizji w inspektorze <code>Area3D</code> wroga (rozszerzenie tabeli z Lab 10):</p>
+<table>
+<thead><tr>
+<th>Obiekt</th>
+<th>Layer</th>
+<th>Mask (lista numerów warstw)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Gracz (Area3D)</td>
+<td>1</td>
+<td>2, 4</td>
+</tr>
+<tr>
+<td>Wróg (Area3D)</td>
+<td>2</td>
+<td>1, 3</td>
+</tr>
+<tr>
+<td>Pocisk gracza (Area3D)</td>
+<td>3</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Pocisk wroga (Area3D)</td>
+<td>4</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>Wróg reaguje na gracza (taranowanie) i na pociski gracza. Pocisk wroga trafia tylko gracza. Gracz reaguje na taranowanie i na pociski wroga (warstwa 4 — przygotowanie pod Zadanie 4).</p>
+<p>W inspektorze warstwy ustawia się checkboxami w sekcji <code>CollisionObject3D > Collision</code>. Zaznaczenie pól odpowiada bitom maski (np. „Mask = 2, 4" → zaznacz checkbox „2" i „4").</p>
+<p>Pamiętaj, żeby zaktualizować Mask <strong>istniejącego</strong> statku z Lab 10 (wcześniej tylko „2", teraz „2, 4"). Inaczej gracz nie będzie reagował na pociski wroga z Zadania 4.</p>
+<p>W skrypcie wroga zdefiniuj:</p>
+<ul>
+<li>eksportowane parametry: <code>hp: int = 2</code>, <code>speed: float = 3.0</code>, <code>score_value: int = 100</code>,</li>
+<li>sygnał: <code>signal died(points: int)</code>,</li>
+<li>obsługę trafienia: każde <code>area<em>entered</code> zmniejsza <code>hp</code> o 1; gdy <code>hp <= 0</code>, wyemituj <code>died(score</em>value)</code> i wywołaj <code>queue_free()</code>.</li>
+</ul>
+<p>Dodaj jednego wroga ręcznie do <code>main.tscn</code> przed kamerą i sprawdź, że trafienia z Lab 10 dalej działają.</p>
+<hr>
+<h3>Zadanie 2: Ruch przez Tween</h3>
+<p>Wróg odchyla się sinusoidalnie w osi X względem pozycji startowej. Zaimplementuj to przez <code>Tween</code> z dwoma fazami i <code>set<em>loops()</code> — czyli sekwencja <code>pozycja</em>startowa + amplituda</code> → <code>pozycja_startowa - amplituda</code> w pętli.</p>
+<p>Wymagania:</p>
+<ul>
+<li><code>sway<em>amplitude: float</code> i <code>sway</em>period: float</code> jako <code>@export</code>,</li>
+<li>uruchomienie animacji w <code>_ready</code>,</li>
+<li><code>Tween.set<em>trans(Tween.TRANS</em>SINE)</code> + <code>set<em>ease(Tween.EASE</em>IN_OUT)</code> dla naturalnego bujania.</li>
+</ul>
+<hr>
+<h3>Zadanie 3: Spawner fal — wzorzec danych</h3>
+<p>Utwórz węzeł <code>WaveSpawner</code> (osobny <code>Node</code> w <code>main.tscn</code> z własnym skryptem). Zaprojektuj go zgodnie z zasadą: <strong>dane fal to tablica słowników, kod spawnera jest stały</strong>.</p>
+<p>Format pojedynczej fali (przykład — możesz rozbudować):</p>
+<pre><code>{ &quot;count&quot;: 3, &quot;x_positions&quot;: [-3.0, 0.0, 3.0], &quot;z_offset&quot;: -30.0, &quot;delay&quot;: 0.0 }</code></pre>
+<p>Spawner musi:</p>
+<ol>
+<li>trzymać tablicę co najmniej trzech fal (różne układy i opóźnienia),</li>
+<li>w <code>_process(delta)</code> akumulować czas i spawnować falę, gdy minie jej <code>delay</code> (każda fala spawnowana <strong>jeden raz</strong>),</li>
+<li>ustawiać pozycje wrogów w globalnej przestrzeni: <code>PathFollow3D.global<em>position + Vector3(x, 0, z</em>offset)</code>. Dlaczego nie dodajemy wrogów jako dzieci <code>PathFollow3D</code>?</li>
+</ol>
+<p>Wskazówka co do unikania <code>if/elif</code> po numerze fali: użyj listy flag <code>_spawned: Array[bool]</code> albo usuwania wpisu z kolejki po spawnie.</p>
+<hr>
+<h3>Zadanie 4: Wróg strzela do gracza</h3>
+<p>Dwa elementy do zrobienia:</p>
+<p><strong>A. Pocisk uniwersalny.</strong> Zmodyfikuj skrypt z <code>bullet.tscn</code> tak, by zamiast hardkodowanego ruchu w <code>-Z</code> przyjmował <code>@export var direction: Vector3</code> i poruszał się <code>position += direction <em> speed </em> delta</code>.</p>
+<p>Po tej zmianie <strong>musisz zaktualizować spawn pocisku gracza</strong> w skrypcie statku — bez tego pociski gracza będą stały w miejscu (<code>direction</code> ma wartość domyślną <code>Vector3.ZERO</code>):</p>
+<pre><code>var bullet = bullet_scene.instantiate()
+get_tree().root.add_child(bullet)
+bullet.global_position = global_position
+bullet.direction = Vector3(0, 0, -1)</code></pre>
+<p>Sprawdź, że pocisk gracza dalej działa, <strong>zanim</strong> przejdziesz do punktu B.</p>
+<p><strong>B. Wróg jako strzelec.</strong> W skrypcie wroga dodaj timer (<code>@export var shoot<em>interval: float = 2.5</code>). Co <code>shoot</em>interval</code> sekund:</p>
+<ol>
+<li>pobierz gracza przez grupę: <code>get<em>tree().get</em>nodes<em>in</em>group("player")</code>,</li>
+<li>jeśli grupa nie jest pusta — policz <code>direction</code> (znormalizowany wektor od wroga do gracza),</li>
+<li>zainstancjonuj pocisk wroga (warstwy zgodnie z tabelą z Zadania 1: Layer 4, Mask 1) i ustaw mu pozycję oraz <code>direction</code>.</li>
+</ol>
+<p>Statek dodaj do grupy <code>"player"</code> w <code><em>ready()</code> (<code>add</em>to_group("player")</code>).</p>
+<hr>
+<h2>5. System oceniania</h2>
+<p><strong>Sposób oddania:</strong> push do repozytorium (folder <code>lab11/</code>) + demo przy prowadzącym.</p>
+<ul>
+<li><strong>[3.0 pkt]</strong> Wrogowie spawnują się z co najmniej dwóch fal i giną od trafień. Tablica fal jako struktura danych (nie <code>if/elif</code>).</li>
+<li><strong>[4.0 pkt]</strong> Sygnał <code>died(points)</code> emitowany przy śmierci wroga (na razie podłączony do <code>print</code> — pełna integracja w Lab 13). Ruch przez <code>Tween</code> z eksportowanymi parametrami.</li>
+<li><strong>[5.0 pkt]</strong> Wróg strzela w kierunku gracza. Pocisk uniwersalny (jeden skrypt obsługuje pocisk gracza i wroga). Brak błędów w konsoli po zniszczeniu wszystkich wrogów ostatniej fali.</li>
+</ul>
+<hr>
+<h2>6. Zadania dodatkowe (*)</h2>
+<h3>Zadanie *: Formacja V</h3>
+<p>Dodaj wzorzec spawnowania w kształt litery V. Parametry formacji (odstęp, kąt) trzymaj w danych fali, <strong>nie</strong> w kodzie spawnera — kod ma pozostać generyczny.</p>
+<h3>Zadanie **: Wróg natarciowy</h3>
+<p>Wróg porusza się do przodu w osi Z (poza odchyleniem sinusoidalnym). Po zbliżeniu się na <code>min<em>distance</code> od gracza zawraca. Zaimplementuj bez <code>Tween</code> — ręcznie w <code></em>process</code>.</p>
+    </div>
+</body>
+</html>

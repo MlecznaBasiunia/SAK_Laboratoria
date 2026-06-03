@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gry_lab_09</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #24292f;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .markdown-body {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        .markdown-body h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body h3 { font-size: 1.25em; }
+        .markdown-body h4 { font-size: 1em; }
+        .markdown-body h5 { font-size: 0.875em; }
+        .markdown-body h6 {
+            font-size: 0.85em;
+            color: #656d76;
+        }
+        .markdown-body p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+        .markdown-body ul,
+        .markdown-body ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        .markdown-body li { margin-top: 0.25em; }
+        .markdown-body li + li { margin-top: 0.25em; }
+        .markdown-body code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+        .markdown-body pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .markdown-body pre code {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            background-color: transparent;
+            border: 0;
+        }
+        .markdown-body blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #656d76;
+            border-left: 0.25em solid #d0d7de;
+        }
+        .markdown-body table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-top: 0;
+            margin-bottom: 16px;
+            width: 100%;
+            overflow: auto;
+        }
+        .markdown-body table th,
+        .markdown-body table td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+        .markdown-body table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        .markdown-body table tr {
+            background-color: #ffffff;
+            border-top: 1px solid #d0d7de;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        .markdown-body img {
+            max-width: 100%;
+            box-sizing: content-box;
+            background-color: #ffffff;
+        }
+        .markdown-body hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #d0d7de;
+            border: 0;
+        }
+        .markdown-body strong { font-weight: 600; }
+        .markdown-body em { font-style: italic; }
+    </style>
+    
+</head>
+<body>
+    <div class="markdown-body">
+<h1>Laboratorium 09: Scena 3D i Szyna</h1>
+<p><strong>Przedmiot:</strong> Tworzenie Gier Komputerowych</p>
+<p><strong>Technologia:</strong> Godot Engine 4.x (GDScript)</p>
+<p><strong>Czas trwania:</strong> 2h 15min</p>
+<hr>
+<h2>1. Cel i Temat Zajęć</h2>
+<p><strong>Blok III: 3D i Systemy. Projekt: Star Fox (klon 3D).</strong></p>
+<p>Pierwsze zajęcia z Godot 4.x i przestrzeni trójwymiarowej. Centralny mechanizm tego bloku: <strong>szyna</strong> (<em>on-rails</em>). Kamera i świat posuwają się automatycznie wzdłuż ścieżki, gracz steruje wyłącznie odchyleniem statku w płaszczyźnie XY przed kamerą.</p>
+<p><strong>Cele:</strong></p>
+<ul>
+<li>Orientacja w edytorze Godot: drzewo sceny, inspektor, uruchamianie projektu.</li>
+<li>Hierarchia węzłów 3D: <code>Node3D</code>, <code>MeshInstance3D</code>, <code>Camera3D</code>, <code>DirectionalLight3D</code>.</li>
+<li>Mechanizm szyny: <code>Path3D</code> + <code>PathFollow3D</code> i automatyczny postęp po ścieżce.</li>
+<li>Sterowanie statkiem jako przesunięcie XY względem punktu na szynie.</li>
+<li><code>clamp()</code> do ograniczenia strefy manewrowania.</li>
+</ul>
+<p><strong>Wymagania wstępne:</strong> ukończony Blok II (Asteroids w Pythonie). Zainstalowany Godot 4.x. Wcześniejszego doświadczenie z Godot lub z 3D nie jest wymagane.</p>
+<hr>
+<h2>2. Część Wstępna (ok. 15 min)</h2>
+<p>Prowadzący buduje na projektorze pustą scenę 3D z <code>Path3D</code>; studenci odtwarzają równolegle. Krótka dyskusja przed pierwszym zadaniem:</p>
+<ol>
+<li><strong>Hierarchia decyduje o zachowaniu.</strong> Jeśli <code>Camera3D</code> jest dzieckiem <code>PathFollow3D</code>, a <code>PathFollow3D</code> przesuwa się wzdłuż ścieżki — co dzieje się z kamerą? A co z obiektem, który <em>nie</em> jest w tej hierarchii?</li>
+<li><strong>Dwa rodzaje ruchu.</strong> Statek jednocześnie jedzie do przodu (automatycznie, razem z kamerą) i odchyla się w lewo/prawo/góra/dół (ręcznie). Gdzie w drzewie sceny musi być statek, żeby oba rodzaje ruchu działały poprawnie?</li>
+<li><strong>Przestrzeń lokalna i globalna.</strong> Właściwość <code>position</code> węzła w Godot to pozycja <em>względem rodzica</em>. Jeśli przesuwasz statek — względem czego go przesuwasz?</li>
+</ol>
+<hr>
+<h2>3. Materiały źródłowe</h2>
+<ul>
+<li><strong>Godot 4 – dokumentacja Path3D:</strong> https://docs.godotengine.org/en/stable/classes/class_path3d.html</li>
+<li><strong>Godot 4 – dokumentacja PathFollow3D:</strong> https://docs.godotengine.org/en/stable/classes/class_pathfollow3d.html</li>
+<li><strong>Godot 4 – GDScript basics:</strong> https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html</li>
+<li><strong>Godot 4 – <code>@export</code>, <code><em>process(delta)</code>:</strong> https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript</em>exports.html</li>
+</ul>
+<p><strong>Punkt startowy:</strong> folder projektu <code>lab09/</code>, repozytorium <code>git init</code>. Resztę zbudujesz w trakcie zajęć.</p>
+<hr>
+<h2>4. Zadania laboratoryjne</h2>
+<hr>
+<h3>Zadanie 1: Pierwsza scena 3D</h3>
+<p>Utwórz nowy projekt Godot 4.x w katalogu <code>lab09/</code>. Dodaj scenę z korzeniem <code>Node3D</code>, zapisz jako <code>main.tscn</code>. W scenie umieść:</p>
+<ul>
+<li><code>MeshInstance3D</code> z siatką <code>BoxMesh</code> jako tymczasowy zastępczy model statku.</li>
+<li><code>Camera3D</code> ustawioną za i nad skrzynką, skierowaną ku niej (właściwości <code>position</code> i <code>rotation</code> w inspektorze).</li>
+<li><code>DirectionalLight3D</code> oświetlający scenę z góry.</li>
+</ul>
+<p>Uruchom scenę (<code>F5</code>). Skrzynka powinna być widoczna i oświetlona. Na tym etapie nic się nie porusza.</p>
+<hr>
+<h3>Zadanie 2: Szyna – Path3D i PathFollow3D</h3>
+<p>Dodaj do sceny węzeł <code>Path3D</code>. W inspektorze edytuj krzywą (<code>Curve</code>): dodaj co najmniej 4 punkty kontrolne tworzące prostą ścieżkę biegnącą wzdłuż osi Z (od <code>(0,0,0)</code> do <code>(0,0,-50)</code> lub dalej). Edytor 3D ma dedykowany tryb edycji krzywej — użyj go.</p>
+<p>Jako dziecko <code>Path3D</code> dodaj <code>PathFollow3D</code>. W inspektorze przeciągnij suwak <code>progress_ratio</code> od 0 do 1. Obserwuj <code>PathFollow3D</code> i jego potomków w widoku 3D.</p>
+<p>Przenieś <code>Camera3D</code> oraz <code>MeshInstance3D</code> statku tak, by stały się dziećmi <code>PathFollow3D</code>. Ustaw ich pozycje względem <code>PathFollow3D</code>: kamera nieco za statkiem i wyżej, statek w centrum.</p>
+<hr>
+<h3>Zadanie 3: Automatyczny postęp szyny</h3>
+<p>Dodaj skrypt do <code>PathFollow3D</code>. W <code><em>process(delta)</code> zwiększaj <code>progress</em>ratio</code> o stałą wartość przemnożoną przez <code>delta</code>. Dobierz tempo tak, by przejście całej ścieżki zajmowało około 10–15 sekund.</p>
+<p>Uruchom scenę. Kamera powinna poruszać się wzdłuż ścieżki, a statek lecieć razem z nią. Jeśli statek wypada z kadru — wróć do Zadania 2 i sprawdź hierarchię.</p>
+<p>Wyeksportuj prędkość: <code>@export var rail_speed: float = 0.02</code> zamiast wartości wpisanej na stałe. Pozwoli to zmieniać tempo z poziomu inspektora.</p>
+<hr>
+<h3>Zadanie 4: Sterowanie XY</h3>
+<p>Dodaj skrypt do węzła statku (<code>MeshInstance3D</code> albo osobny <code>Node3D</code> będący jego rodzicem).</p>
+<p>W <code><em>process(delta)</code> odczytaj wejście z klawiatury (akcje <code>ui</em>left</code>, <code>ui<em>right</code>, <code>ui</em>up</code>, <code>ui_down</code>) i zmieniaj <code>position.x</code> oraz <code>position.y</code>. Pozycja jest <em>lokalna</em> — względem <code>PathFollow3D</code> — więc statek automatycznie jedzie z szyną.</p>
+<p>Ogranicz strefę manewrowania funkcją <code>clamp()</code>:</p>
+<pre><code>position.x = clamp(position.x, -LIMIT_X, LIMIT_X)
+position.y = clamp(position.y, -LIMIT_Y, LIMIT_Y)</code></pre>
+<p><code>LIMIT<em>X</code> i <code>LIMIT</em>Y</code> zdefiniuj jako <code>const</code> albo wyeksportuj. Dobierz wartości tak, żeby statek nie wypadał z kadru.</p>
+<hr>
+<h3>Zadanie 5: Porządek i commit</h3>
+<p>Sprawdź:</p>
+<ul>
+<li>scena uruchamia się bez błędów i ostrzeżeń w konsoli Godot,</li>
+<li>statek porusza się razem z kamerą,</li>
+<li>sterowanie XY działa i jest ograniczone przez <code>clamp()</code>,</li>
+<li>w kodzie nie ma zakomentowanych bloków ani nieużywanych zmiennych.</li>
+</ul>
+<p>Wykonaj pierwszy commit w repozytorium z komunikatem opisującym, co już działa.</p>
+<hr>
+<h2>5. System oceniania</h2>
+<p><strong>Sposób oddania:</strong> push do repozytorium Git (folder <code>lab09/</code>) + krótkie demo przy prowadzącym (uruchomienie sceny).</p>
+<ul>
+<li><strong>[3.0 pkt]</strong> Scena 3D uruchamia się: statek widoczny, kamera ustawiona, oświetlenie działa. Path3D z PathFollow3D obecne w drzewie sceny.</li>
+<li><strong>[4.0 pkt]</strong> Szyna działa automatycznie. Statek i kamera poruszają się wzdłuż ścieżki. Sterowanie XY zmienia pozycję statku w locie.</li>
+<li><strong>[5.0 pkt]</strong> Ograniczenie strefy manewrowania (<code>clamp()</code>) działa. Prędkość szyny jako <code>@export</code>. Brak ostrzeżeń w konsoli. Commit w repozytorium.</li>
+</ul>
+<hr>
+<h2>6. Zadania dodatkowe (*)</h2>
+<h3>Zadanie *: Krzywa zamiast prostej</h3>
+<p>Zmodyfikuj krzywą <code>Path3D</code> tak, by zawierała zakręty (np. łuk 90°). Zaobserwuj zachowanie kamery na zakręcie. Czy statek dalej reaguje tak samo na klawisze lewo/prawo?</p>
+<h3>Zadanie **: Prędkość szyny zmienna w czasie</h3>
+<p>Wprowadź przyspieszenie szyny: <code>rail_speed</code> rośnie liniowo przez pierwsze 5 sekund od startu do wartości docelowej. Użyj zmiennej czasu akumulowanej przez <code>delta</code>.</p>
+    </div>
+</body>
+</html>
